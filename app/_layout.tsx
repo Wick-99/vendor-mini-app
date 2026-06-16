@@ -1,24 +1,39 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
+import { AppSplashGate } from "../src/components/AppSplashGate";
+import { ProductsProvider } from "../src/context/ProductsContext";
+import { colors } from "../src/theme";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+// Hold the native splash until our animated loading screen is ready to take over.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+	return (
+		<SafeAreaProvider initialMetrics={initialWindowMetrics}>
+			<ProductsProvider>
+				<StatusBar style="dark" />
+				<Stack
+					screenOptions={{
+						headerStyle: { backgroundColor: colors.background },
+						headerTintColor: colors.primary,
+						headerTitleStyle: {
+							fontWeight: "800",
+							color: colors.text,
+						},
+						headerShadowVisible: false,
+						contentStyle: { backgroundColor: colors.background },
+					}}>
+					<Stack.Screen name="index" options={{ headerShown: false }} />
+					<Stack.Screen
+						name="add-product"
+						options={{ title: "Add Product", presentation: "modal" }}
+					/>
+					<Stack.Screen name="product/[id]" options={{ title: "Product" }} />
+				</Stack>
+				<AppSplashGate />
+			</ProductsProvider>
+		</SafeAreaProvider>
+	);
 }

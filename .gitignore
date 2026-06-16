@@ -41,3 +41,9 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Claude Code / assignment docs
+.claude/
+CLAUDE.md
+MACHINE_TEST.md
+
