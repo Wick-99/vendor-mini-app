@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { ComponentProps, useRef, useState } from "react";
+import { ComponentProps, useEffect, useRef, useState } from "react";
 import {
+	Keyboard,
 	KeyboardAvoidingView,
 	Platform,
 	Pressable,
@@ -25,7 +26,14 @@ import {
 	toNewProduct,
 	validateProduct,
 } from "../src/lib/validation";
-import { colors, gradients, radius, shadow, spacing, typography } from "../src/theme";
+import {
+	colors,
+	gradients,
+	radius,
+	shadow,
+	spacing,
+	typography,
+} from "../src/theme";
 import type { ProductCategory } from "../src/types/category";
 import type { ProductStatus } from "../src/types/product";
 
@@ -46,6 +54,21 @@ export default function AddProductScreen() {
 
 	const [submitted, setSubmitted] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [androidKeyboardHeight, setAndroidKeyboardHeight] = useState(0);
+
+	useEffect(() => {
+		if (Platform.OS !== "android") return;
+		const show = Keyboard.addListener("keyboardDidShow", (e) => {
+			setAndroidKeyboardHeight(e.endCoordinates.height);
+		});
+		const hide = Keyboard.addListener("keyboardDidHide", () => {
+			setAndroidKeyboardHeight(0);
+		});
+		return () => {
+			show.remove();
+			hide.remove();
+		};
+	}, []);
 
 	const priceRef = useRef<TextInput>(null);
 	const descRef = useRef<TextInput>(null);
@@ -93,17 +116,19 @@ export default function AddProductScreen() {
 
 	return (
 		<KeyboardAvoidingView
-			style={styles.flex}
-			behavior="padding">
+			style={[styles.flex, androidKeyboardHeight > 0 && { paddingBottom: androidKeyboardHeight }]}
+			behavior={Platform.OS === "ios" ? "padding" : undefined}>
 			<ScrollView
 				ref={scrollRef}
 				style={styles.flex}
 				contentContainerStyle={styles.content}
 				keyboardShouldPersistTaps="handled"
 				showsVerticalScrollIndicator={false}>
-				<Animated.Text entering={FadeInDown.duration(400)} style={styles.lead}>
-					Add a product to your storefront. A clear photo and a fair price help
-					it sell.
+				<Animated.Text
+					entering={FadeInDown.duration(400)}
+					style={styles.lead}>
+					Add a product to your storefront. A clear photo and a fair price
+					help it sell.
 				</Animated.Text>
 
 				<Section icon="image-outline" title="Photo" delay={80}>
@@ -193,7 +218,11 @@ export default function AddProductScreen() {
 			</ScrollView>
 
 			{/* Sticky save bar */}
-			<View style={[styles.footer, { paddingBottom: insets.bottom + spacing.sm }]}>
+			<View
+				style={[
+					styles.footer,
+					{ paddingBottom: insets.bottom + spacing.sm },
+				]}>
 				<PrimaryButton
 					label="Save product"
 					onPress={handleSubmit}

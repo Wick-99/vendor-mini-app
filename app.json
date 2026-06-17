@@ -1,43 +1,51 @@
 {
-  "expo": {
-    "name": "Vendor Mini App",
-    "slug": "vendor-mini-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "scheme": "vendormini",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "icon": "./assets/images/icon.png",
-    "splash": {
-      "image": "./assets/images/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#F6F7FB"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.yourname.vendorminiapp"
-    },
-    "android": {
-      "package": "com.yourname.vendorminiapp",
-      "softwareKeyboardLayoutMode": "resize",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#0B0F14"
-      }
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos so you can add a product image.",
-          "cameraPermission": "Allow $(PRODUCT_NAME) to use the camera so you can take a product photo."
-        }
-      ],
-      "expo-asset"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
-  }
+	"expo": {
+		"name": "Vendor Mini App",
+		"slug": "vendor-mini-app",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"scheme": "vendormini",
+		"userInterfaceStyle": "light",
+		"newArchEnabled": true,
+		"icon": "./assets/images/icon.png",
+		"splash": {
+			"image": "./assets/images/splash-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#F6F7FB"
+		},
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "sreevishnu.vendorminiapp"
+		},
+		"android": {
+			"package": "sreevishnu.vendorminiapp",
+			"softwareKeyboardLayoutMode": "pan",
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/android-icon-foreground.png",
+				"backgroundImage": "./assets/images/android-icon-background.png",
+				"monochromeImage": "./assets/images/android-icon-monochrome.png"
+			},
+			"permissions": ["android.permission.RECORD_AUDIO"]
+		},
+		"plugins": [
+			"expo-router",
+			[
+				"expo-image-picker",
+				{
+					"photosPermission": "Allow $(PRODUCT_NAME) to access your photos so you can add a product image.",
+					"cameraPermission": "Allow $(PRODUCT_NAME) to use the camera so you can take a product photo."
+				}
+			],
+			"expo-asset"
+		],
+		"experiments": {
+			"typedRoutes": true
+		},
+		"extra": {
+			"router": {},
+			"eas": {
+				"projectId": "76a8a929-8bed-440a-b0b5-665966df46cc"
+			}
+		}
+	}
 }

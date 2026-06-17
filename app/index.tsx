@@ -28,7 +28,14 @@ import { SortSheet } from "../src/components/SortSheet";
 import { useProducts } from "../src/context/ProductsContext";
 import { useProductQuery } from "../src/hooks/useProductQuery";
 import { SORT_OPTIONS } from "../src/types/filters";
-import { colors, gradients, radius, shadow, spacing, typography } from "../src/theme";
+import {
+	colors,
+	gradients,
+	radius,
+	shadow,
+	spacing,
+	typography,
+} from "../src/theme";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -113,8 +120,8 @@ export default function MyProductsScreen() {
 	return (
 		<View style={styles.flex}>
 			{/* Fixed header — search/filter/sort stay accessible while the list scrolls. */}
-			<Animated.View
-				entering={FadeInDown.duration(450)}
+			<View
+				// entering={FadeInDown.duration(450)}
 				style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
 				<View style={styles.titleRow}>
 					<View style={styles.headerText}>
@@ -126,7 +133,11 @@ export default function MyProductsScreen() {
 						start={{ x: 0, y: 0 }}
 						end={{ x: 1, y: 1 }}
 						style={[styles.logoBadge, shadow.primary]}>
-						<Ionicons name="storefront" size={24} color={colors.onPrimary} />
+						<Ionicons
+							name="storefront"
+							size={24}
+							color={colors.onPrimary}
+						/>
 					</LinearGradient>
 				</View>
 
@@ -144,7 +155,7 @@ export default function MyProductsScreen() {
 					value={query.category}
 					onChange={query.setCategory}
 				/>
-			</Animated.View>
+			</View>
 
 			{results.length === 0 ? (
 				<NoResults onClear={query.clear} />
@@ -163,7 +174,9 @@ export default function MyProductsScreen() {
 						styles.listContent,
 						{ paddingBottom: insets.bottom + 110 },
 					]}
-					ItemSeparatorComponent={() => <View style={{ height: spacing.md }} />}
+					ItemSeparatorComponent={() => (
+						<View style={{ height: spacing.md }} />
+					)}
 					showsVerticalScrollIndicator={false}
 					keyboardShouldPersistTaps="handled"
 					keyboardDismissMode="on-drag"
@@ -185,12 +198,21 @@ export default function MyProductsScreen() {
 			{/* Floating action button with a brief loading animation. */}
 			<AnimatedPressable
 				onPress={goToAdd}
-				onPressIn={() => (fabPress.value = withSpring(1, { damping: 16, stiffness: 250 }))}
-				onPressOut={() => (fabPress.value = withSpring(0, { damping: 16, stiffness: 250 }))}
+				onPressIn={() =>
+					(fabPress.value = withSpring(1, { damping: 16, stiffness: 250 }))
+				}
+				onPressOut={() =>
+					(fabPress.value = withSpring(0, { damping: 16, stiffness: 250 }))
+				}
 				accessibilityRole="button"
 				accessibilityLabel="Add product"
 				accessibilityState={{ busy: navigating }}
-				style={[styles.fab, { bottom: insets.bottom + spacing.lg }, fabStyle, shadow.primary]}>
+				style={[
+					styles.fab,
+					{ bottom: insets.bottom + spacing.lg },
+					fabStyle,
+					shadow.primary,
+				]}>
 				<LinearGradient
 					colors={gradients.primary}
 					start={{ x: 0, y: 0 }}
