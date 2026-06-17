@@ -168,6 +168,12 @@ export default function MyProductsScreen() {
 							product={item}
 							index={index}
 							onPress={() => goToDetail(item.id)}
+							onEdit={() =>
+								router.push({
+									pathname: "/add-product",
+									params: { id: item.id },
+								} as any)
+							}
 						/>
 					)}
 					contentContainerStyle={[

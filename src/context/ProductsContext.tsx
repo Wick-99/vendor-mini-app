@@ -13,6 +13,7 @@ interface ProductsContextValue {
 	products: Product[];
 	isLoading: boolean;
 	addProduct: (input: NewProductInput) => Promise<Product>;
+	updateProduct: (id: string, input: NewProductInput) => Promise<void>;
 	getProductById: (id: string) => Product | undefined;
 	/** Re-read products from storage (used by pull-to-refresh). */
 	refresh: () => Promise<void>;
@@ -61,6 +62,17 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 		[products],
 	);
 
+	const updateProduct = useCallback(
+		async (id: string, input: NewProductInput): Promise<void> => {
+			const next = products.map((p) =>
+				p.id === id ? { ...p, ...input } : p,
+			);
+			setProducts(next);
+			await saveProducts(next);
+		},
+		[products],
+	);
+
 	const getProductById = useCallback(
 		(id: string) => products.find((p) => p.id === id),
 		[products],
@@ -73,8 +85,8 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	const value = useMemo(
-		() => ({ products, isLoading, addProduct, getProductById, refresh }),
-		[products, isLoading, addProduct, getProductById, refresh],
+		() => ({ products, isLoading, addProduct, updateProduct, getProductById, refresh }),
+		[products, isLoading, addProduct, updateProduct, getProductById, refresh],
 	);
 
 	return (

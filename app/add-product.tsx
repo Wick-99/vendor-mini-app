@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { ComponentProps, useEffect, useRef, useState } from "react";
 import {
 	Keyboard,
@@ -42,15 +42,18 @@ type IoniconName = ComponentProps<typeof Ionicons>["name"];
 export default function AddProductScreen() {
 	const router = useRouter();
 	const insets = useSafeAreaInsets();
-	const { addProduct } = useProducts();
+	const { addProduct, updateProduct, getProductById } = useProducts();
+	const { id } = useLocalSearchParams<{ id?: string }>();
+	const isEditMode = !!id;
+	const existing = id ? getProductById(id) : undefined;
 
-	const [name, setName] = useState("");
-	const [price, setPrice] = useState("");
-	const [description, setDescription] = useState("");
-	const [imageUri, setImageUri] = useState<string | null>(null);
-	const [category, setCategory] = useState<ProductCategory | null>(null);
-	const [customCategory, setCustomCategory] = useState("");
-	const [status, setStatus] = useState<ProductStatus>("active");
+	const [name, setName] = useState(() => existing?.name ?? "");
+	const [price, setPrice] = useState(() => (existing ? String(existing.price) : ""));
+	const [description, setDescription] = useState(() => existing?.description ?? "");
+	const [imageUri, setImageUri] = useState<string | null>(() => existing?.imageUri ?? null);
+	const [category, setCategory] = useState<ProductCategory | null>(() => existing?.category ?? null);
+	const [customCategory, setCustomCategory] = useState(() => existing?.customCategory ?? "");
+	const [status, setStatus] = useState<ProductStatus>(() => existing?.status ?? "active");
 
 	const [submitted, setSubmitted] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,24 +100,29 @@ export default function AddProductScreen() {
 		if (hasErrors(errors)) return;
 		try {
 			setIsSubmitting(true);
-			await addProduct(
-				toNewProduct({
-					name,
-					price,
-					description,
-					imageUri: imageUri as string,
-					status,
-					category: category as ProductCategory,
-					customCategory,
-				}),
-			);
-			router.back(); // new product is already at the top of the list
+			const input = toNewProduct({
+				name,
+				price,
+				description,
+				imageUri: imageUri as string,
+				status,
+				category: category as ProductCategory,
+				customCategory,
+			});
+			if (isEditMode && id) {
+				await updateProduct(id, input);
+			} else {
+				await addProduct(input);
+			}
+			router.back();
 		} catch {
 			setIsSubmitting(false); // persist failed — keep the form for retry
 		}
 	};
 
 	return (
+		<>
+		<Stack.Screen options={{ title: isEditMode ? "Edit Product" : "Add Product" }} />
 		<KeyboardAvoidingView
 			style={[styles.flex, androidKeyboardHeight > 0 && { paddingBottom: androidKeyboardHeight }]}
 			behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -230,6 +238,7 @@ export default function AddProductScreen() {
 				/>
 			</View>
 		</KeyboardAvoidingView>
+		</>
 	);
 }
 

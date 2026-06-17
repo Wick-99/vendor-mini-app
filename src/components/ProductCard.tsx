@@ -19,10 +19,12 @@ const SPRING = { damping: 16, stiffness: 240 };
 export function ProductCard({
 	product,
 	onPress,
+	onEdit,
 	index = 0,
 }: {
 	product: Product;
 	onPress: () => void;
+	onEdit?: () => void;
 	index?: number;
 }) {
 	const pressed = useSharedValue(0);
@@ -61,6 +63,16 @@ export function ProductCard({
 						/>
 					</View>
 				</View>
+				{onEdit && (
+					<Pressable
+						onPress={onEdit}
+						hitSlop={8}
+						accessibilityRole="button"
+						accessibilityLabel="Edit product"
+						style={styles.editButton}>
+						<Ionicons name="create-outline" size={18} color={colors.primary} />
+					</Pressable>
+				)}
 				<Ionicons
 					name="chevron-forward"
 					size={20}
@@ -97,5 +109,8 @@ const styles = StyleSheet.create({
 		flexWrap: "wrap",
 		gap: spacing.xs,
 		marginTop: 2,
+	},
+	editButton: {
+		padding: spacing.xs,
 	},
 });
